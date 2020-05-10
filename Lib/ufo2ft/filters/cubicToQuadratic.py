@@ -2,8 +2,8 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 
 from ufo2ft.fontInfoData import getAttrWithFallback
 from ufo2ft.filters import BaseFilter
-from cu2qu.ufo import DEFAULT_MAX_ERR, CURVE_TYPE_LIB_KEY
-from cu2qu.pens import Cu2QuPointPen
+from fontTools.cu2qu.ufo import DEFAULT_MAX_ERR, CURVE_TYPE_LIB_KEY
+from fontTools.pens.cu2quPen import Cu2QuPointPen
 
 import logging
 
