@@ -221,6 +221,8 @@ def compileTTF(
                 for i, a in enumerate(glyph.glyphVariationLayers):
                     axis = Axis()
                     axis.axisNameID = i
+                    # Note: make min and max values attributes in the UFO lib directly
+                    # so that they are editable by designer
                     axis.minValue = 0.0
                     axis.maxValue = 1.0
                     glyphAxisCollection.axes.append(axis)
