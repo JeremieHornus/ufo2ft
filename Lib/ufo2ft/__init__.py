@@ -21,6 +21,10 @@ from ufo2ft.constants import SPARSE_TTF_MASTER_TABLES, SPARSE_OTF_MASTER_TABLES
 from ufo2ft.util import getDefaultMasterFont
 import logging
 
+import copy
+
+from fontTools.ttLib.ttFont import newTable
+from fontTools.ttLib.tables._d_c_v_a import *
 try:
     from ._version import version as __version__
 except ImportError:
@@ -202,6 +206,26 @@ def compileTTF(
         ufo, glyphSet=glyphSet, glyphOrder=glyphOrder
     )
     otf = outlineCompiler.compile()
+    glyphAxisCollections = []
+    for glyphName in otf[('glyf')].glyphOrder:
+        glyph = otf['glyf'].glyphs[glyphName]
+        if hasattr(glyph, "glyphVariationLayers"):
+            if len(glyph.glyphVariationLayers) > 0:
+                logger.info(glyphName, 'has variations')
+                if "dcva" not in otf.keys():
+                    logger.info("adding DCVA")
+                    otf["dcva"] = newTable("dcva")
+                glyphAxisCollection = GlyphAxisCollection()
+                glyphAxisCollection.glyphID = otf.getGlyphID(glyphName)
+                glyphAxisCollection.axes = []
+                for i, a in enumerate(glyph.glyphVariationLayers):
+                    axis = Axis()
+                    axis.axisNameID = i
+                    axis.minValue = 0.0
+                    axis.maxValue = 1.0
+                    glyphAxisCollection.axes.append(axis)
+                glyphAxisCollections.append(glyphAxisCollection)
+    otf["dcva"].glyphAxisCollections = copy.deepcopy(glyphAxisCollections)
 
     # Only the default layer is likely to have all glyphs used in feature code.
     if layerName is None:
