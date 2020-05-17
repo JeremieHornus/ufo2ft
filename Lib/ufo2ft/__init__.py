@@ -227,6 +227,12 @@ def compileTTF(
                     axis.maxValue = 1.0
                     glyphAxisCollection.axes.append(axis)
                 glyphAxisCollections.append(glyphAxisCollection)
+
+                if "dcvr" not in otf.keys():
+                    logger.info("adding DCVR")
+                    otf["dcvr"] = newTable("dcvr")
+                print(glyphName, len(glyph.variationGlyphs))
+
     otf["dcva"].glyphAxisCollections = copy.deepcopy(glyphAxisCollections)
 
     # Only the default layer is likely to have all glyphs used in feature code.
